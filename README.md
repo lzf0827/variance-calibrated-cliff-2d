@@ -34,10 +34,17 @@ pip install -r requirements.txt
 python physchem_delta/tests_leakage.py
 ```
 
-### Running the 30-Target Benchmark
+### Running the Benchmarks
 
 ```bash
+# 1. Base 30-target composite multi-kernel & pairwise 2D benchmark
 python physchem_delta/run_jcim_30targets.py
+
+# 2. Leak-free 3-fold nested OOF Bates-Granger calibration (OptW & PriorN)
+python physchem_delta/eval_jcim_step_a.py
+
+# 3. Strict zero-overlap Bemis-Murcko scaffold split evaluation (GroupOptW)
+python physchem_delta/eval_scaffold_robustness.py
 ```
 
 ## Citation
