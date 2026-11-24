@@ -1,16 +1,14 @@
-# Variance-Calibrated Cross-Paradigm 2D Modeling for Activity Cliff Prediction
+# Variance-Calibrated 2D Modeling for Activity Cliff Prediction
 
-Official codebase and reproducible benchmark summaries for the *Journal of Chemical Information and Modeling* (*JCIM*) manuscript:
+Official reference implementation and reproducible benchmark summaries for variance-calibrated pure-2D activity cliff prediction across all 30 MoleculeACE benchmark targets.
 
-> **Variance-Calibrated Cross-Paradigm 2D Modeling for Activity Cliff Prediction: When Split-Matched Ensembling Outperforms Ligand-Only 3D, Quantum, and Graph Neural Architectures**
->
-> Zhuofan Li
+## Overview
 
-## Key Contributions
+Activity cliffs—pairs of structurally similar compounds with large potency disparities—pose a fundamental challenge for molecular representation learning. This repository implements:
 
-1. **Pure-2D Cross-Paradigm Fusion**: Combines a composite positive-semidefinite multi-kernel SVR (`K_Multi_SVR`: 0.70 ECFP4 Tanimoto + 0.15 MACCS Tanimoto + 0.15 Desc2D RBF) with an antisymmetric pairwise potency-difference network (`Y_A2_2D` / zero-initialized 2D-LFER conditioning `Y_FiLM_2DLFER`) on all 30 official MoleculeACE targets (48,714 compounds, 5 seeds).
+1. **Pure-2D Cross-Paradigm Fusion**: Combines a composite positive-semidefinite multi-kernel SVR (`K_Multi_SVR`: 0.70 ECFP4 Tanimoto + 0.15 MACCS Tanimoto + 0.15 Desc2D RBF) with an antisymmetric pairwise potency-difference network (`Y_A2_2D` / zero-initialized 2D-LFER conditioning `Y_FiLM_2DLFER`) on all 30 MoleculeACE targets (48,714 compounds, 5 random seeds).
 2. **Leak-Free, Split-Matched Variance Calibration**: Analytical 3-fold nested out-of-fold Bates--Granger calibration (`OptW` for stratified splits; Murcko `GroupKFold` `GroupOptW` for strict zero-overlap scaffold holdouts) and zero-parameter sample-size shrinkage (`PriorN`), automatically shifting weight toward `K_Multi_SVR` under $n < 1000$ or far out-of-distribution scaffold shifts ($s_{\max} < 0.50$).
-3. **Counterfactual Dissection of Four Ligand-Only Failure Modes**: Controlled 10-target Wave-1 ablations isolating why vacuum ETKDG 3D conformers, unenumerated-SMILES `AIMNet2` charges, reused-validation gating, out-of-fold residual stacking (`KR_*`), and GINE + cross-attention smoothing degrade ligand-only activity cliff resolution.
+3. **Counterfactual Dissection of Ligand-Only Failure Modes**: Controlled Wave-1 ablations isolating why vacuum ETKDG 3D conformers, unenumerated-SMILES `AIMNet2` charges, reused-validation gating, out-of-fold residual stacking (`KR_*`), and GINE + cross-attention smoothing degrade ligand-only activity cliff resolution.
 
 ## Repository Structure
 
@@ -26,26 +24,32 @@ variance-calibrated-cliff-2d/
 │   ├── eval_opt13_modular.py # Gated 3D/QM & GINE+CrossAttn counterfactual ablations
 │   ├── eval_path_a_modular.py# OOF kernel-residual stacking vs y-space controls
 │   └── tests_leakage.py      # 5/5 automated anti-leakage contract tests
-├── paper/
-│   ├── figures/              # Publication figure generators (fig1_hero .. fig5_cases + TOC)
-│   └── tables/               # LaTeX table generators (Main Tables 1-4 & Supporting Tables S1-S5)
 └── refine-logs/              # Verified summary CSVs across 30-target, scaffold, and Wave-1 suites
 ```
 
-## Quick Verification
+## Quick Start
 
 ```bash
 pip install -r requirements.txt
 python physchem_delta/tests_leakage.py
 ```
 
-Generating tables and figures from included summary CSVs (and downloaded MoleculeACE datasets where needed):
+### Running the 30-Target Benchmark
 
 ```bash
-python paper/tables/gen_tables.py
-python paper/tables/gen_si_tables.py
-python paper/figures/gen_toc_graphic.py
-python paper/figures/gen_fig1_hero.py
+python physchem_delta/run_jcim_30targets.py
+```
+
+## Citation
+
+If you find this codebase or benchmark results useful in your research, please cite:
+
+```bibtex
+@article{variance_calibrated_cliff_2d,
+  title={Variance-Calibrated 2D Modeling for Activity Cliff Prediction},
+  note={Manuscript under review; citation details will be updated upon publication},
+  year={2026}
+}
 ```
 
 ## License
